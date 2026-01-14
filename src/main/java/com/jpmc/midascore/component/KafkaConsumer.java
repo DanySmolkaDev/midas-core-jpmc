@@ -6,8 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaConsumer {
+    private final DatabaseConduit databaseConduit;
+
+    public KafkaConsumer(DatabaseConduit databaseConduit) {
+        this.databaseConduit = databaseConduit;
+    }
+
     @KafkaListener(topics = "${general.kafka-topic}", groupId = "midas-core-group")
     public void listen(Transaction t) {
-        System.out.println("Received transaction: " + t.toString());
+        databaseConduit.processTransaction(t);
     }
 }
